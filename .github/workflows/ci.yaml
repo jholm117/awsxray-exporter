@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: awsxray-exporter
+  IMAGE_NAME: jholm117/awsxray-exporter
 
 permissions:
   packages: write
