@@ -49,6 +49,7 @@ jobs:
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
   helm:
+    runs-on: ubuntu-latest
     steps:
       - name: Publish Helm charts
         uses: helm/chart-releaser-action@v1.6.0
