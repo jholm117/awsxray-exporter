@@ -13,7 +13,7 @@ permissions:
   packages: write
 
 jobs:
-  publish:
+  docker:
     runs-on: ubuntu-latest
 
     steps:
@@ -50,12 +50,7 @@ jobs:
           push-to-registry: true
   helm:
     steps:
-      - name: Package Helm chart
-        run: |
-          helm package charts/awsxray-exporter
-
-      - name: Publish Helm chart
-        uses: helm/chart-releaser-action@v1
-        with:
-          chart: charts/awsxray-exporter-*.tgz
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish Helm charts
+        uses: helm/chart-releaser-action@v1.6.0
+        env:
+          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
