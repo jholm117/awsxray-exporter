@@ -3,6 +3,16 @@ entries:
   awsxray-exporter:
   - apiVersion: v2
     appVersion: latest
+    created: "2024-09-04T21:04:30.942458621Z"
+    description: A Helm chart for Kubernetes
+    digest: bc11f3624cee25ea4664a3a963f6e0a216b538b5ede5024009c8391d891fff13
+    name: awsxray-exporter
+    type: application
+    urls:
+    - https://github.com/jholm117/awsxray-exporter/releases/download/awsxray-exporter-0.1.2/awsxray-exporter-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: latest
     created: "2024-09-04T20:30:34.24996796Z"
     description: A Helm chart for Kubernetes
     digest: 55a8ebd055ecd98ed310c8589925c9488a9c134e59d128e179471419326eaa2b
@@ -21,4 +31,4 @@ entries:
     urls:
     - https://github.com/jholm117/awsxray-exporter/releases/download/awsxray-exporter-0.1.0/awsxray-exporter-0.1.0.tgz
     version: 0.1.0
-generated: "2024-09-04T20:30:34.249998798Z"
+generated: "2024-09-04T21:04:30.942475453Z"
