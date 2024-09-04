@@ -35,10 +35,14 @@ spec:
           env: 
             - name: OTEL_COLLECTOR_URL
               value: {{ required "otelCollectorUrl is required" .Values.otelCollectorUrl }}
+            {{- if .Values.pollingIntervalSeconds }}
             - name: POLLING_INTERVAL_SECONDS
               value: {{ .Values.pollingIntervalSeconds }}
+            {{- end }}
+            {{- if .Values.filterExpression }}
             - name: FILTER_EXPRESSION
               value: {{ .Values.filterExpression }}
+            {{- end }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"

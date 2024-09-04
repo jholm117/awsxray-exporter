@@ -4,8 +4,11 @@
 
 ### App settings
 
-pollingIntervalSeconds: "10"
+# defaults to 10s
+# pollingIntervalSeconds: "10"
+
 # otelCollectorUrl: ""
+
 # filterExpression: ""
 
 ###
