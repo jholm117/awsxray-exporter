@@ -34,7 +34,7 @@ spec:
         - name: {{ .Chart.Name }}
           env: 
             - name: OTEL_COLLECTOR_URL
-              value: {{ .Values.otelCollectorUrl }}
+              value: {{ required "otelCollectorUrl is required" .Values.otelCollectorUrl }}
             - name: POLLING_INTERVAL_SECONDS
               value: {{ .Values.pollingIntervalSeconds }}
             - name: FILTER_EXPRESSION

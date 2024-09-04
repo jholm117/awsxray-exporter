@@ -2,16 +2,18 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
-
-otelCollectorUrl: ""
+### App settings
 
 pollingIntervalSeconds: "10"
+# otelCollectorUrl: ""
+# filterExpression: ""
 
-filterExpression: ""
+###
+
+replicaCount: 1
 
 image:
-  repository: jholm117/awsxray-exporter
+  repository: ghcr.io/jholm117/awsxray-exporter
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""

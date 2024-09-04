@@ -6,7 +6,7 @@ import {
   XRayClient,
 } from "@aws-sdk/client-xray";
 
-const POLLING_INTERVAL =
+const POLLING_INTERVAL_MILLISECONDS =
   Number(process.env.POLLING_INTERVAL_SECONDS) * 1000 || 10000;
 const OTEL_COLLECTOR_URL = process.env.OTEL_COLLECTOR_URL;
 if (!OTEL_COLLECTOR_URL) {
@@ -17,7 +17,7 @@ const client = new XRayClient({ region: "us-east-2" });
 
 async function fetchTraces() {
   const EndTime = new Date();
-  const StartTime = new Date(EndTime.getTime() - POLLING_INTERVAL); // Fetch traces from the last 60 seconds
+  const StartTime = new Date(EndTime.getTime() - POLLING_INTERVAL_MILLISECONDS); // Fetch traces from the last 60 seconds
 
   try {
     for await (const traceSummaries of paginateGetTraceSummaries(
@@ -93,7 +93,9 @@ async function main() {
   while (true) {
     console.log("Polling X-Ray for traces");
     await fetchTraces();
-    await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL)); // Wait for 60 seconds before fetching new traces
+    await new Promise((resolve) =>
+      setTimeout(resolve, POLLING_INTERVAL_MILLISECONDS)
+    ); // Wait for 60 seconds before fetching new traces
   }
 }
 
