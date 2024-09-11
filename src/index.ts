@@ -7,17 +7,28 @@ import {
 } from "@aws-sdk/client-xray";
 
 const POLLING_INTERVAL_MILLISECONDS =
-  Number(process.env.POLLING_INTERVAL_SECONDS) * 1000 || 10000;
-const OTEL_COLLECTOR_URL = process.env.OTEL_COLLECTOR_URL;
-if (!OTEL_COLLECTOR_URL) {
-  throw new Error("OTEL_COLLECTOR_URL environment variable is required");
+  Number(process.env.POLLING_INTERVAL_SECONDS ?? 10) * 1000;
+
+const OTEL_COLLECTOR_HOSTNAME = process.env.OTEL_COLLECTOR_HOSTNAME;
+if (!OTEL_COLLECTOR_HOSTNAME) {
+  throw new Error("OTEL_COLLECTOR_HOSTNAME environment variable is required");
 }
+
+const OTEL_COLLECTOR_PORT = Number(process.env.OTEL_COLLECTOR_PORT ?? "2000");
+
 const FILTER_EXPRESSION = process.env.FILTER_EXPRESSION;
 const client = new XRayClient({ region: "us-east-2" });
 
 async function fetchTraces() {
   const EndTime = new Date();
   const StartTime = new Date(EndTime.getTime() - POLLING_INTERVAL_MILLISECONDS); // Fetch traces from the last 60 seconds
+
+  // Generator function to yield chunks of specified size
+  function* batchArray(array: any[], size: number) {
+    for (let i = 0; i < array.length; i += size) {
+      yield array.slice(i, i + size);
+    }
+  }
 
   try {
     for await (const traceSummaries of paginateGetTraceSummaries(
@@ -31,13 +42,6 @@ async function fetchTraces() {
       if (!traceIds) {
         console.log("No trace IDs found");
         return;
-      }
-
-      // Generator function to yield chunks of specified size
-      function* batchArray(array: any[], size: number) {
-        for (let i = 0; i < array.length; i += size) {
-          yield array.slice(i, i + size);
-        }
       }
 
       console.log("Found", traceIds.length, "traces from xray");
@@ -78,8 +82,8 @@ function sendTracesToOtelUdp(traceData: Trace) {
       message,
       0,
       message.length,
-      2000,
-      OTEL_COLLECTOR_URL,
+      OTEL_COLLECTOR_PORT,
+      OTEL_COLLECTOR_HOSTNAME,
       (err) => {
         if (err) {
           console.error("Error sending trace to daemon:", err);

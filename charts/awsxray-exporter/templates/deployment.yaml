@@ -32,9 +32,14 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
+          command: ["node", "index.js"]
           env: 
-            - name: OTEL_COLLECTOR_URL
-              value: {{ required "otelCollectorUrl is required" .Values.otelCollectorUrl }}
+            - name: OTEL_COLLECTOR_HOSTNAME
+              value: {{ required "otelCollector.hostname is required" .Values.otelCollector.hostname }}
+            {{- if .Values.otelCollector.port }}
+            - name: OTEL_COLLECTOR_PORT
+              value: {{ .Values.otelCollector.port }}
+            {{- end }}
             {{- if .Values.pollingIntervalSeconds }}
             - name: POLLING_INTERVAL_SECONDS
               value: {{ .Values.pollingIntervalSeconds }}
@@ -47,14 +52,8 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: {{ .Values.service.port }}
-              protocol: TCP
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
-          readinessProbe:
-            {{- toYaml .Values.readinessProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- with .Values.volumeMounts }}
