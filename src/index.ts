@@ -96,10 +96,10 @@ function sendTracesToOtelUdp(traceData: Trace) {
 async function main() {
   while (true) {
     console.log("Polling X-Ray for traces");
-    await fetchTraces();
+    fetchTraces();
     await new Promise((resolve) =>
       setTimeout(resolve, POLLING_INTERVAL_MILLISECONDS)
-    ); // Wait for 60 seconds before fetching new traces
+    );
   }
 }
 
