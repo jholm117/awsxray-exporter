@@ -1,9 +1,9 @@
-name: Publish Image and Helm Chart
+name: Publish Image
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - "v*.*.*"
 
 env:
   REGISTRY: ghcr.io
@@ -37,6 +37,8 @@ jobs:
           tags: |
             # set latest tag for default branch
             type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
+            type=sha
 
       - name: Build and push Docker image
         id: push
@@ -46,6 +48,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+        env:
+          SOURCE_DATE_EPOCH: 0
 
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v1
@@ -53,25 +57,3 @@ jobs:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
-
-  helm:
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Configure Git
-        run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-
-      - name: Publish Helm charts
-        uses: helm/chart-releaser-action@v1.6.0
-        with:
-          skip_existing: true
-        env:
-          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
